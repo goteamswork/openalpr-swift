@@ -7,9 +7,8 @@ DEPENDENCIES:
   - TesseractOCRiOS (~> 5.0.1)
 
 SPEC REPOS:
-  https://github.com/CocoaPods/Specs.git:
-    - OpenCV
   trunk:
+    - OpenCV
     - TesseractOCRiOS
 
 SPEC CHECKSUMS:
@@ -18,4 +17,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b5cdb81fda2d1054bf95125bc6a651118dfb201d
 
-COCOAPODS: 1.8.4
+COCOAPODS: 1.16.2
