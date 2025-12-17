@@ -10,7 +10,7 @@ Current version is using precompiled Frameworks from [cardash](https://github.co
 openalpr.framework compiled from v2.3.0 and dependency pod v3.1.0.1 for [OpenCV](https://cocoapods.org/?q=opencv)
 
 # Requirements
-* iOS 9+
+* iOS 12+
 
 # Installation
 
