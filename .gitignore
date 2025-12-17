@@ -29,6 +29,9 @@ xcuserdata
 # Swift Package Manager
 .build/
 
+# CodeQL
+_codeql_detected_source_root
+
 # Carthage
 Carthage/Build
 

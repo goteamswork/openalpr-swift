@@ -11,6 +11,44 @@ openalpr.framework compiled from v2.3.0 and dependency pod v3.1.0.1 for [OpenCV]
 
 # Requirements
 * iOS 12+
+* macOS 10.15+ (for SPM on macOS)
+
+# System Dependencies
+
+When using Swift Package Manager, you'll need to have OpenCV and OpenALPR libraries installed on your system. This package includes embedded OpenALPR header files, but the actual compiled libraries must be provided.
+
+### macOS Installation (using Homebrew)
+
+Install OpenALPR and its dependencies using Homebrew:
+
+```bash
+# Install OpenALPR (includes OpenCV as a dependency)
+brew install openalpr
+
+# Alternatively, install OpenCV separately if needed
+brew install opencv
+```
+
+### Linux Installation (using apt)
+
+For Ubuntu/Debian-based distributions:
+
+```bash
+# Update package list
+sudo apt update
+
+# Install OpenALPR and OpenCV
+sudo apt install libopenalpr-dev libopencv-dev
+
+# Or install from source for the latest version
+# See: https://github.com/openalpr/openalpr
+```
+
+### iOS Projects
+
+For iOS projects using CocoaPods, the dependencies are handled automatically through the Podfile. When using SPM for iOS development, the package includes fallback header files, but linking with actual libraries may require additional configuration in your Xcode project.
+
+> **Note:** The embedded header files in this package (`Sources/OpenALPRDependencies/include/openalpr/`) provide a fallback for header resolution, but you still need the compiled OpenCV and OpenALPR libraries for linking and runtime execution.
 
 # Installation
 
@@ -33,7 +71,7 @@ Or in Xcode:
 2. Enter the repository URL: `https://github.com/goteamswork/openalpr-swift.git`
 3. Select the version and add to your target
 
-**Important:** When using SPM, you'll need to provide OpenCV and OpenALPR C++ library dependencies separately, as these are not included in the SPM package due to their complexity.
+**Important:** This package now includes embedded OpenALPR header files to resolve the `openalpr/alpr.h` import. However, you still need to have OpenCV and OpenALPR libraries installed on your system for linking and runtime execution. See the [System Dependencies](#system-dependencies) section above for installation instructions.
 
 ### CocoaPods
 
