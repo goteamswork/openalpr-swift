@@ -7,7 +7,8 @@ let package = Package(
     name: "OpenALPRSwift",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v12)
+        .iOS(.v12),
+        .macOS(.v10_15)
     ],
     products: [
         .library(
@@ -32,9 +33,15 @@ let package = Package(
                 .process("Resources/runtime_data")
             ],
             publicHeadersPath: "include",
+            cSettings: [
+                // Header search path for embedded OpenALPR headers
+                // This allows the package to find openalpr/alpr.h includes
+                .headerSearchPath("../OpenALPRDependencies/include")
+            ],
             cxxSettings: [
-                // Note: This header search path points to the bundled openalpr.framework
-                // Consumer projects will need to provide OpenCV and OpenALPR dependencies
+                // Header search paths for OpenALPR headers
+                // Priority order: embedded headers, then fallback to system framework
+                .headerSearchPath("../OpenALPRDependencies/include"),
                 .headerSearchPath("../../lib/openalpr.framework/Headers"),
                 .define("OPENCV_TRAITS_ENABLE_DEPRECATED", to: "1", .when(platforms: [.iOS]))
             ],
