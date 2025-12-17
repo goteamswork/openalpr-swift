@@ -10,16 +10,22 @@ OpenALPRSwift now supports Swift Package Manager (SPM) for easier integration in
 OpenALPRSwift/
 ├── Package.swift                    # SPM manifest
 ├── Sources/
-│   └── OpenALPRSwift/
-│       ├── include/                 # Public headers
-│       │   ├── OpenALPRSwift.h     # Umbrella header
-│       │   ├── OAScanner.h         # Scanner interface
-│       │   └── OATypes.h           # Type definitions
-│       ├── OAScanner.mm            # Scanner implementation
-│       ├── OATypes.mm              # Type implementations
-│       └── Resources/              # Runtime data and config
-│           ├── openalpr.conf
-│           └── runtime_data/
+│   ├── OpenALPRSwift/
+│   │   ├── include/                 # Public headers
+│   │   │   ├── OpenALPRSwift.h     # Umbrella header
+│   │   │   ├── OAScanner.h         # Scanner interface
+│   │   │   └── OATypes.h           # Type definitions
+│   │   ├── OAScanner.mm            # Scanner implementation
+│   │   ├── OATypes.mm              # Type implementations
+│   │   └── Resources/              # Runtime data and config
+│   │       ├── openalpr.conf
+│   │       └── runtime_data/
+│   └── OpenALPRDependencies/
+│       └── include/
+│           └── openalpr/           # Embedded OpenALPR headers
+│               ├── alpr.h          # Main ALPR header
+│               ├── config.h        # Configuration header
+│               └── constants.h     # Constants header
 └── Tests/
     └── OpenALPRSwiftTests/
         └── openalpr_swiftTests.swift
@@ -67,7 +73,26 @@ targets: [
 - **OpenALPR C++ Library**: The core license plate recognition engine
 - **OpenCV**: Computer vision library for image processing
 
-These dependencies are **not included** in the SPM package due to their complexity and size. The package includes the wrapper layer and configuration files only.
+#### Embedded Headers
+
+This package includes **embedded OpenALPR header files** in `Sources/OpenALPRDependencies/include/openalpr/` to resolve the `openalpr/alpr.h` import issues. This allows the package to compile without requiring OpenALPR headers to be installed system-wide. However, the compiled OpenCV and OpenALPR libraries are still required for linking and runtime execution.
+
+#### Installing System Libraries
+
+The actual compiled libraries are **not included** in the SPM package due to their size and complexity. You need to install them separately:
+
+**macOS (Homebrew):**
+```bash
+brew install openalpr opencv
+```
+
+**Linux (Ubuntu/Debian):**
+```bash
+sudo apt update
+sudo apt install libopenalpr-dev libopencv-dev
+```
+
+**Note:** For iOS projects, these dependencies are typically provided through CocoaPods or bundled frameworks.
 
 ### Recommended Integration Method
 
@@ -75,9 +100,20 @@ For production use, we recommend using **CocoaPods** instead of SPM, as it handl
 
 ### SPM Limitations
 
-- Cannot build on Linux or macOS (iOS-specific framework dependencies)
-- Requires manual setup of OpenCV and OpenALPR C++ libraries
-- Best suited for development environments where these dependencies are already configured
+- **Platform Support**: Primarily designed for iOS 12+ and macOS 10.15+. Linux support is experimental and may require additional configuration.
+- **Library Dependencies**: Requires manual installation of OpenCV and OpenALPR C++ libraries on your system.
+- **Build Configuration**: May require additional linker flags or library search paths depending on your system setup.
+- **Best Use Case**: Development environments where OpenCV and OpenALPR are already configured, or iOS projects that can link against bundled frameworks.
+
+### Cross-Platform Compatibility
+
+- **iOS**: ✅ Fully supported when used with CocoaPods for dependencies or bundled frameworks
+- **macOS**: ✅ Supported with system-installed OpenALPR and OpenCV libraries  
+- **Linux**: ⚠️ Experimental - requires system libraries and may need additional configuration
+
+**Known Limitations:**
+- Some iOS-specific frameworks (UIKit, CoreImage, etc.) are conditionally linked and will not be available on macOS/Linux
+- OpenCV installation paths may vary by system; you may need to add custom header/library search paths
 
 ## Usage
 
@@ -127,7 +163,17 @@ Type definitions for recognition results:
 ## Platform Support
 
 - **iOS 12.0+**
+- **macOS 10.15+**
 - Swift 5.9+
+
+## Header Files
+
+This package includes embedded OpenALPR header files to resolve compilation issues:
+- `Sources/OpenALPRDependencies/include/openalpr/alpr.h` - Main OpenALPR API
+- `Sources/OpenALPRDependencies/include/openalpr/config.h` - Configuration definitions
+- `Sources/OpenALPRDependencies/include/openalpr/constants.h` - Constant definitions
+
+These headers are automatically included in the build via the `cSettings` and `cxxSettings` configuration in `Package.swift`.
 
 ## Resources
 
