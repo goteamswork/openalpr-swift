@@ -1,63 +1,43 @@
 // swift-tools-version: 5.9
+// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
 let package = Package(
-    name: "ALPRTesseractWrapper",
+    name: "OpenALPRSwift",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v9)
     ],
     products: [
         .library(
-            name: "ALPRTesseractWrapper",
-            targets: ["ALPRTesseractWrapper"]
+            name: "OpenALPRSwift",
+            targets: ["OpenALPRSwift"]
         )
     ],
     targets: [
-        // Optional: Prebuilt dependencies as binary targets. Replace paths/URLs as needed.
-        // .binaryTarget(
-        //     name: "OpenCV",
-        //     path: "Binaries/OpenCV.xcframework"
-        // ),
-        // .binaryTarget(
-        //     name: "TesseractOCRiOS",
-        //     path: "Binaries/TesseractOCR.xcframework"
-        // ),
-
+        // Swift wrapper target for OpenALPR
+        // Note: This package requires OpenCV and OpenALPR C++ libraries to be available
+        // For iOS projects, these dependencies are typically provided via CocoaPods
+        // See README.md for integration instructions
         .target(
-            name: "ALPRTesseractWrapper",
-            dependencies: [
-                // "OpenCV",
-                // "TesseractOCRiOS"
-            ],
-            path: "Sources/ALPRTesseractWrapper",
-            publicHeadersPath: "include",
+            name: "OpenALPRSwift",
+            path: "Sources/OpenALPRSwift",
             sources: [
-                "ObjC++/G8Tesseract.mm",
-                "ObjC++/G8RecognitionOperation.m",
-                "ObjC++/OAScanner.mm",
-                "ObjC++/OATypes.mm",
-                "ObjC++/UIImage+G8Filters.h",
-                "ObjC++/G8TesseractParameters.h"
+                "OAScanner.mm",
+                "OATypes.mm"
             ],
             resources: [
-                .process("Resources/tessdata"),
                 .process("Resources/openalpr.conf"),
                 .process("Resources/runtime_data")
             ],
-            cSettings: [
-                // If you ship headers for Tesseract/OpenCV via xcframeworks, header paths come from the binary.
-                // If you ship headers as sources, add header search paths here.
-                // .headerSearchPath("relative/path/to/headers")
-            ],
+            publicHeadersPath: "include",
             cxxSettings: [
-                .define("OPENCV_TRAITS_ENABLE_DEPRECATED", to: "1", .when(platforms: [.iOS])),
-                .unsafeFlags(["-std=c++14"], .when(platforms: [.iOS]))
+                .headerSearchPath("../../lib/openalpr.framework/Headers"),
+                .define("OPENCV_TRAITS_ENABLE_DEPRECATED", to: "1", .when(platforms: [.iOS]))
             ],
             linkerSettings: [
-                // System frameworks required by your code and dependencies
-                .linkedFramework("UIKit"),
+                .linkedFramework("UIKit", .when(platforms: [.iOS])),
                 .linkedFramework("Foundation"),
                 .linkedFramework("CoreGraphics"),
                 .linkedFramework("CoreImage"),
@@ -66,9 +46,14 @@ let package = Package(
                 .linkedFramework("QuartzCore"),
                 .linkedFramework("AVFoundation"),
                 .linkedFramework("Accelerate"),
-                // If not using TesseractOCRiOS prebuilt umbrella, you may need these system libs:
-                .linkedLibrary("z")
+                .linkedLibrary("z"),
+                .linkedLibrary("c++")
             ]
+        ),
+        .testTarget(
+            name: "OpenALPRSwiftTests",
+            dependencies: ["OpenALPRSwift"],
+            path: "Tests/OpenALPRSwiftTests"
         )
     ]
 )

@@ -14,6 +14,27 @@ openalpr.framework compiled from v2.3.0 and dependency pod v3.1.0.1 for [OpenCV]
 
 # Installation
 
+### Swift Package Manager
+
+[Swift Package Manager](https://swift.org/package-manager/) is a tool for managing the distribution of Swift code. It's integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+
+> **Note:** Due to the complex C++ dependencies (OpenCV and OpenALPR), SPM integration has limitations. For production use, CocoaPods is recommended. The SPM package provides the Swift/Objective-C wrapper layer.
+
+To integrate OpenALPRSwift into your Xcode project using Swift Package Manager, add it to the dependencies value of your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/goteamswork/openalpr-swift.git", .upToNextMajor(from: "2.0.0"))
+]
+```
+
+Or in Xcode:
+1. File > Add Package Dependencies...
+2. Enter the repository URL: `https://github.com/goteamswork/openalpr-swift.git`
+3. Select the version and add to your target
+
+**Important:** When using SPM, you'll need to provide OpenCV and OpenALPR C++ library dependencies separately, as these are not included in the SPM package due to their complexity.
+
 ### CocoaPods
 
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
